@@ -153,9 +153,8 @@ export const getUserPdf = async (req: Request, res: Response) => {
         let filename = encodeURIComponent(`${user.handle}_profile.pdf`);
         res.setHeader('Content-disposition', `attachment; filename="${filename}"`);
         res.setHeader('Content-type', 'application/pdf');
-        doc.fontSize(25).text(`Perfil de ${user.handle}`, { align: 'center' });
+        doc.fontSize(25).text(`DevTree de ${user.handle}`, { align: 'center' });
         if (user.image) {
-            // Descargar la imagen como buffer
             const response = await axios.get(user.image, { responseType: 'arraybuffer' });
             const imageBuffer = Buffer.from(response.data, 'binary');
             doc.image(imageBuffer, { width: 150, align: 'center' });
@@ -163,7 +162,7 @@ export const getUserPdf = async (req: Request, res: Response) => {
         doc.moveDown();
         doc.fontSize(16).text(user.description);
         doc.moveDown();
-        doc.text('Redes sociales:');
+        doc.text('Redes:');
         JSON.parse(user.links).forEach(link => {
             if (link.enabled) {
                 doc.text(`${link.name}: ${link.url}`);
