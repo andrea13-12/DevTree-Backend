@@ -3,10 +3,10 @@ import { validationResult } from 'express-validator'
 import slug from 'slug'
 import formidable from 'formidable'
 import { v4 as uuid } from 'uuid'
-import User from "../models/User"
-import { checkPassword, hashPassword } from '../utils/auth'
-import { generateJWT } from '../utils/jwt'
-import cloudinary from '../config/cloudinary'
+import User from "../models/User.js"
+import { checkPassword, hashPassword } from '../utils/auth.js'
+import { generateJWT } from '../utils/jwt.js'
+import cloudinary from '../config/cloudinary.js'
 
 export const createAccount = async (req: Request, res: Response) => {
     const { email, password } = req.body

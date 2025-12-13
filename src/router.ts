@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
-import { createAccount, getUser, getUserByHandle, login, searchByHandle, updateProfile, uploadImage } from './handlers'
-import { handleInputErrors } from './middleware/validation'
-import { authenticate } from './middleware/auth'
+import { createAccount, getUser, getUserByHandle, login, searchByHandle, updateProfile, uploadImage } from './handlers/index.js'
+import { handleInputErrors } from './middleware/validation.js'
+import { authenticate } from './middleware/auth.js'
 
 const router = Router()
 
