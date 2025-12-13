@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
-import { createAccount, getUser, getUserByHandle, login, searchByHandle, updateProfile, uploadImage } from './handlers/index.js'
+import { createAccount, getUser, getUserByHandle, getUserPdf, login, searchByHandle, updateProfile, uploadImage } from './handlers/index.js'
 import { handleInputErrors } from './middleware/validation.js'
 import { authenticate } from './middleware/auth.js'
 
@@ -57,5 +57,7 @@ router.post('/search',
     handleInputErrors,
     searchByHandle
 )
+
+router.get('/pdf/:handle', getUserPdf)
 
 export default router

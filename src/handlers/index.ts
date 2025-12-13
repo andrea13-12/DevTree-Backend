@@ -7,6 +7,8 @@ import User from "../models/User.js"
 import { checkPassword, hashPassword } from '../utils/auth.js'
 import { generateJWT } from '../utils/jwt.js'
 import cloudinary from '../config/cloudinary.js'
+import PDFDocument from 'pdfkit'
+import axios from 'axios'
 
 export const createAccount = async (req: Request, res: Response) => {
     const { email, password } = req.body
@@ -137,5 +139,41 @@ export const searchByHandle = async (req: Request, res: Response) => {
     } catch (e) {
         const error = new Error('Hubo un error')
         return res.status(500).json({ error: error.message })
+    }
+}
+
+export const getUserPdf = async (req: Request, res: Response) => {
+    try {
+        const { handle } = req.params;
+        const user = await User.findOne({ handle }).select('-_id -__v -email -password');
+        if (!user) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+        const doc = new PDFDocument();
+        let filename = encodeURIComponent(`${user.handle}_profile.pdf`);
+        res.setHeader('Content-disposition', `attachment; filename="${filename}"`);
+        res.setHeader('Content-type', 'application/pdf');
+        doc.fontSize(25).text(`Perfil de ${user.handle}`, { align: 'center' });
+        if (user.image) {
+            // Descargar la imagen como buffer
+            const response = await axios.get(user.image, { responseType: 'arraybuffer' });
+            const imageBuffer = Buffer.from(response.data, 'binary');
+            doc.image(imageBuffer, { width: 150, align: 'center' });
+        }
+        doc.moveDown();
+        doc.fontSize(16).text(user.description);
+        doc.moveDown();
+        doc.text('Redes sociales:');
+        JSON.parse(user.links).forEach(link => {
+            if (link.enabled) {
+                doc.text(`${link.name}: ${link.url}`);
+            }
+        });
+        doc.end();
+        doc.pipe(res);
+        
+    } catch (e) {
+        const error = new Error(e);
+        return res.status(500).json({ error: error.message });
     }
 }
